@@ -1,0 +1,117 @@
+import { useEffect, useState } from "react"
+import "./App.css"
+
+function App() {
+  const [negocios, setNegocios] = useState([])
+  const [nome, setNome] = useState("")
+  const [categoria, setCategoria] = useState("")
+  const [contato, setContato] = useState("")
+  const [modo, setModo] = useState("usuario")
+  const [busca, setBusca] = useState("")
+
+  // puxando dados do DB
+const carregarNegocios = () => {
+  fetch(`http://localhost:3001/negocios?busca=${busca}`)
+    .then(res => res.json())
+    .then(data => setNegocios(data))
+}
+
+useEffect(() => {
+  const delay = setTimeout(() => {
+    carregarNegocios()
+  }, 300)
+
+  return () => clearTimeout(delay)
+}, [busca])
+
+  // cadastrar um novo negócio
+  const cadastrar = () => {
+    if (!nome || !categoria || !contato) {
+      alert("Preencha todos os campos")
+      return
+    }
+
+fetch("http://localhost:3001/negocios", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    nome,
+    categoria,
+    contato
+  })
+})
+.then(() => {
+  carregarNegocios()
+  setNome("")
+  setCategoria("")
+  setContato("")
+})
+}
+
+return (
+  <div className="container">
+    <h1>Catálogo de Negócios de Bonito-MS</h1>
+
+    <div className="botoes">
+      <button onClick={() => setModo("usuario")}>Usuário</button>
+      <button onClick={() => setModo("admin")}>Admin</button>
+    </div>
+
+  {/* USUÁRIO */}
+    {modo === "usuario" && (
+      <div>
+        <h2>Negócios disponíveis</h2>
+                <input
+        placeholder="Buscar negócio..."
+        value={busca}
+        onChange={(e) => setBusca(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            carregarNegocios()
+          }
+        }}
+      />
+        {negocios.map((negocio) => (
+          <div key={negocio.id} className="card">
+            <h3>{negocio.nome}</h3>
+            <p><strong>Categoria:</strong> {negocio.categoria}</p>
+            <p><strong>Contato:</strong> {negocio.contato}</p>
+          </div>
+        ))}
+      </div>
+    )}
+
+    {/* ADMIN */}
+    {modo === "admin" && (
+      <div>
+        <h2>Painel Administrativo</h2>
+
+        <input
+          placeholder="Nome"
+          value={nome}
+          onChange={e => setNome(e.target.value)}
+        />
+
+        <input
+          placeholder="Categoria"
+          value={categoria}
+          onChange={e => setCategoria(e.target.value)}
+        />
+
+        <input
+          placeholder="Contato"
+          value={contato}
+          onChange={e => setContato(e.target.value)}
+        />
+
+        <button onClick={cadastrar}>Cadastrar</button>
+      </div>
+    )}
+  </div>
+)
+}
+
+
+export default App 
