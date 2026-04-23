@@ -50,6 +50,15 @@ fetch("http://localhost:3001/negocios", {
 })
 }
 
+const excluir = (id) => {
+  fetch(`http://localhost:3001/negocios/${id}`, {
+    method: "DELETE"
+  })
+  .then(() => {
+    carregarNegocios()
+  })
+}
+
 return (
   <div className="container">
     <h1>Catálogo de Negócios de Bonito-MS</h1>
@@ -107,6 +116,26 @@ return (
         />
 
         <button onClick={cadastrar}>Cadastrar</button>
+
+                <h2>Negócios disponíveis</h2>
+                <input
+        placeholder="Buscar negócio..."
+        value={busca}
+        onChange={(e) => setBusca(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            carregarNegocios()
+          }
+        }}
+      />
+        {negocios.map((negocio) => (
+          <div key={negocio.id} className="card">
+            <h3>{negocio.nome}</h3>
+            <p><strong>Categoria:</strong> {negocio.categoria}</p>
+            <p><strong>Contato:</strong> {negocio.contato}</p>
+            <button onClick={() => excluir(negocio.id)}>Excluir</button>
+          </div>
+        ))}
       </div>
     )}
   </div>

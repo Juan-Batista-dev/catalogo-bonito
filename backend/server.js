@@ -41,6 +41,21 @@ app.post('/negocios', (req, res) => {
   )
 })
 
+//EXCLUIR
+app.delete('/negocios/:id', (req, res) => {
+  const { id } = req.params
+
+  db.query(
+    'DELETE FROM negocios WHERE id = ?',
+    [id],
+    (err, result) => {
+      if (err) return res.send(err)
+      res.send('Negócio excluído')
+    }
+  )
+})
+
 app.listen(3001, () => {
   console.log('Servidor rodando na porta 3001')
 })
+
