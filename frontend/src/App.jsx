@@ -8,6 +8,7 @@ function App() {
   const [contato, setContato] = useState("")
   const [modo, setModo] = useState("usuario")
   const [busca, setBusca] = useState("")
+  const [editandoId, setEditandoId] = useState(null)
 
   // puxando dados do DB
 const carregarNegocios = () => {
@@ -56,6 +57,34 @@ const excluir = (id) => {
   })
   .then(() => {
     carregarNegocios()
+  })
+}
+
+const editar = (negocio) => {
+  setNome(negocio.nome)
+  setCategoria(negocio.categoria)
+  setContato(negocio.contato)
+  setEditandoId(negocio.id)
+}
+
+const atualizar = () => {
+  fetch(`http://localhost:3001/negocios/${editandoId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      nome,
+      categoria,
+      contato
+    })
+  })
+  .then(() => {
+    carregarNegocios()
+    setNome("")
+    setCategoria("")
+    setContato("")
+    setEditandoId(null)
   })
 }
 
@@ -115,7 +144,11 @@ return (
           onChange={e => setContato(e.target.value)}
         />
 
-        <button onClick={cadastrar}>Cadastrar</button>
+       {editandoId ? (
+  <button onClick={atualizar}>Salvar Alterações</button>
+) : (
+  <button onClick={cadastrar}>Cadastrar</button>
+)}
 
                 <h2>Negócios disponíveis</h2>
                 <input
@@ -134,6 +167,7 @@ return (
             <p><strong>Categoria:</strong> {negocio.categoria}</p>
             <p><strong>Contato:</strong> {negocio.contato}</p>
             <button onClick={() => excluir(negocio.id)}>Excluir</button>
+            <button onClick={() => editar(negocio)}>Editar</button>
           </div>
         ))}
       </div>

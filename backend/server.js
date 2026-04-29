@@ -54,6 +54,20 @@ app.delete('/negocios/:id', (req, res) => {
     }
   )
 })
+//UPDATE
+app.put('/negocios/:id', (req, res) => {
+  const { id } = req.params
+  const { nome, categoria, contato } = req.body
+
+  db.query(
+    'UPDATE negocios SET nome = ?, categoria = ?, contato = ? WHERE id = ?',
+    [nome, categoria, contato, id],
+    (err, result) => {
+      if (err) return res.send(err)
+      res.send('Negócio atualizado')
+    }
+  )
+})
 
 app.listen(3001, () => {
   console.log('Servidor rodando na porta 3001')
