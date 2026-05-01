@@ -37,7 +37,44 @@ git clone https://github.com/Juan-Batista-dev/catalogo-bonito.git
 
 ---
 
-### 2. Backend
+### 2. Banco de dados
+
+Certifique-se de que o MySQL esteja em execução.
+
+Execute o arquivo `database.sql` que está no projeto para criar o banco de dados e as tabelas.
+
+Caso prefira, você pode executar manualmente:
+
+```sql
+CREATE DATABASE IF NOT EXISTS catalogo_bonito;
+
+USE catalogo_bonito;
+
+CREATE TABLE IF NOT EXISTS categorias (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS negocios (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(100) NOT NULL,
+  categoria_id INT NOT NULL,
+  contato VARCHAR(100) NOT NULL,
+  FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+    ON DELETE RESTRICT
+    ON UPDATE CASCADE
+);
+
+INSERT INTO categorias (nome) VALUES
+('Alimentação'),
+('Transporte'),
+('Turismo'),
+('Serviços');
+```
+
+---
+
+### 3. Backend
 
 ```bash
 cd backend
@@ -45,12 +82,13 @@ npm install
 node server.js
 ```
 
-O servidor será iniciado em:
-http://localhost:3001
+O servidor será iniciado em: http://localhost:3001
+
+Caso necessário, altere as credenciais do banco no arquivo `backend/server.js`.
 
 ---
 
-### 3. Frontend
+### 4. Frontend
 
 ```bash
 cd frontend
@@ -58,31 +96,15 @@ npm install
 npm run dev
 ```
 
-A aplicação estará disponível em:
-http://localhost:5173
+A aplicação estará disponível em: http://localhost:5173
 
 ---
 
 ## Banco de dados
 
-O projeto utiliza MySQL.
+O sistema utiliza duas tabelas principais: `categorias` e `negocios`.
 
-É necessário criar um banco chamado:
-
-```sql
-catalogo_bonito
-```
-
-E uma tabela chamada:
-
-```sql
-CREATE TABLE negocios (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  nome VARCHAR(255),
-  categoria VARCHAR(255),
-  contato VARCHAR(255)
-);
-```
+A tabela `negocios` possui uma chave estrangeira (`categoria_id`) que referencia a tabela `categorias`. Isso foi feito para evitar duplicidade de categorias e manter os dados organizados.
 
 ---
 
