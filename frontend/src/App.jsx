@@ -101,6 +101,9 @@ return (
     {modo === "usuario" && (
       <div>
         <h2>Negócios disponíveis</h2>
+        
+        <label htmlFor="busca">Buscar um Negócio</label>
+      
                 <input
         placeholder="Buscar negócio..."
         value={busca}
@@ -126,18 +129,19 @@ return (
       <div>
         <h2>Painel Administrativo</h2>
 
+        <label htmlFor="Nome">Nome</label>
         <input
           placeholder="Nome"
           value={nome}
           onChange={e => setNome(e.target.value)}
         />
-
+        <label htmlFor="Categoria">Categoria</label>
         <input
           placeholder="Categoria"
           value={categoria}
           onChange={e => setCategoria(e.target.value)}
         />
-
+        <label htmlFor="Contato">Contato</label>
         <input
           placeholder="Contato"
           value={contato}
@@ -151,6 +155,8 @@ return (
 )}
 
                 <h2>Negócios disponíveis</h2>
+
+                <label htmlFor="busca">Buscar um Negócio</label>
                 <input
         placeholder="Buscar negócio..."
         value={busca}
