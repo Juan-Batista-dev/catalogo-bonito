@@ -9,8 +9,10 @@ function App() {
   const [modo, setModo] = useState("usuario")
   const [busca, setBusca] = useState("")
   const [editandoId, setEditandoId] = useState(null)
+  const [categorias, setCategorias] = useState([])
+  const [categoria_id, setCategoriaId] = useState("")
 
-  // puxando dados do DB
+  // puxando Negocios do DB
 const carregarNegocios = () => {
   fetch(`http://localhost:3001/negocios?busca=${busca}`)
     .then(res => res.json())
@@ -25,12 +27,25 @@ useEffect(() => {
   return () => clearTimeout(delay)
 }, [busca])
 
+  // puxando Cetegorias do DB
+const carregarCategorias = () => {
+  fetch("http://localhost:3001/categorias")
+    .then(res => res.json())
+    .then(data => setCategorias(data))
+}
+
+useEffect(() => {
+  carregarCategorias()
+}, [])
+
   // cadastrar um novo negócio
   const cadastrar = () => {
-    if (!nome || !categoria || !contato) {
+    if (!nome || !categoria_id || !contato) {
       alert("Preencha todos os campos")
       return
     }
+
+
 
 fetch("http://localhost:3001/negocios", {
   method: "POST",
@@ -39,7 +54,7 @@ fetch("http://localhost:3001/negocios", {
   },
   body: JSON.stringify({
     nome,
-    categoria,
+    categoria_id,
     contato
   })
 })
@@ -75,7 +90,7 @@ const atualizar = () => {
     },
     body: JSON.stringify({
       nome,
-      categoria,
+      categoria_id,
       contato
     })
   })
@@ -135,12 +150,21 @@ return (
           value={nome}
           onChange={e => setNome(e.target.value)}
         />
-        <label htmlFor="Categoria">Categoria</label>
-        <input
-          placeholder="Categoria"
-          value={categoria}
-          onChange={e => setCategoria(e.target.value)}
-        />
+        <label htmlFor="categoria">Categoria</label>
+        <select
+           id="categoria"
+           value={categoria_id}
+           onChange={e => setCategoriaId(e.target.value)}
+>
+        <option value="">Selecione uma categoria</option>
+
+          {categorias.map((cat) => (
+            <option key={cat.id} value={cat.id}>
+              {cat.nome}
+            </option>
+          ))}
+        </select>
+
         <label htmlFor="Contato">Contato</label>
         <input
           placeholder="Contato"
